@@ -1,0 +1,59 @@
+% Facts: graph(Start, End, Cost)
+graph(a, b, 4).
+graph(a, c, 1).
+graph(b, d, 5).
+graph(c, d, 8).
+graph(c, e, 10).
+graph(d, e, 2).
+graph(d, f, 6).
+graph(e, f, 3).
+
+% Heuristic values for each node
+heuristic(a, 7).
+heuristic(b, 3).
+heuristic(c, 2).
+heuristic(d, 1).
+heuristic(e, 4).
+heuristic(f, 0).
+
+% Best First Search algorithm
+best_first_search(Node, Goal) :-
+    heuristic(Node, H),
+    best_first_search(Node, Goal, [Node-H], []).
+
+% Base case: Goal node is reached
+best_first_search(Node, Node, _, _) :-
+    write('Goal reached: '), write(Node), nl.
+
+% Recursive case
+best_first_search(Current, Goal, _, _) :-
+    expand(Current, Children),
+    add_to_open(Children),
+    best_child(Next),
+    write('Expanding: '), write(Current), nl,
+    best_first_search(Next, Goal, _, _).
+
+% Expand a node to its children
+expand(Node, Children) :-
+    findall(Child, graph(Node, Child, _), Children).
+
+% Add children to the open list
+add_to_open([]).
+add_to_open([Child|Rest]) :-
+    heuristic(Child, H),
+    assertz(open(Child, H)),
+    add_to_open(Rest).
+
+% Find the best child node based on heuristic
+best_child(Node) :-
+    retract(open(Node, _)),
+    \+ (open(_, H), H < Node),
+    !.
+
+% Initialization
+:- dynamic open/2.
+:- initialization(main).
+
+main :-
+    best_first_search(a, f),
+    halt.
