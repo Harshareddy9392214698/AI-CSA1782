@@ -1,0 +1,42 @@
+% Facts: parent(Parent, Child)
+parent(john, ann).
+parent(john, bob).
+parent(mary, ann).
+parent(mary, bob).
+parent(bob, charlie).
+parent(ann, charlie).
+parent(bob, daisy).
+parent(ann, daisy).
+
+% Rules: X is the mother of Y if X is a parent of Y and X is female
+mother(X, Y) :-
+    parent(X, Y),
+    female(X).
+
+% Rules: X is the father of Y if X is a parent of Y and X is male
+father(X, Y) :-
+    parent(X, Y),
+    male(X).
+
+% Rules: X is the grandparent of Z if X is a parent of Y and Y is a parent of Z
+grandparent(X, Z) :-
+    parent(X, Y),
+    parent(Y, Z).
+
+% Facts: gender(Person, Gender)
+gender(john, male).
+gender(mary, female).
+gender(ann, female).
+gender(bob, male).
+gender(charlie, male).
+gender(daisy, female).
+
+% Facts: male(Person)
+male(john).
+male(bob).
+male(charlie).
+
+% Facts: female(Person)
+female(mary).
+female(ann).
+female(daisy).
